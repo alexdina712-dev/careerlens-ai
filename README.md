@@ -6,11 +6,17 @@ A career preparation workspace that compares CV evidence with job requirements a
 
 ## Explore
 
+[Live demo](https://careerlens-ai-dina19.vercel.app) · [GitHub source and CI](https://github.com/alexdina712-dev/careerlens-ai) · [Organized Drive backup](https://drive.google.com/drive/folders/1BhJHWFMNLKoXRm4l_uk3Z5mq6G-nkIMF)
+
 Choose **Explore the demo workspace** on the sign-in screen. The fictional account is `demo@careerlens.app` / `CareerLensDemo!2026`. Shared demo CVs are read-only. Create a private account to test uploads, versioning, and deletion with fictional information.
 
 ## Screenshots
 
 Screenshots in [docs/screenshots](docs/screenshots) are captured from the functioning application. See the dashboard, CV library, tracker, analysis report, and mobile layout.
+
+![CareerLens dashboard](docs/screenshots/02-dashboard.png)
+
+![Structured advisory analysis](docs/screenshots/06-analysis-report.png)
 
 ## Features
 
