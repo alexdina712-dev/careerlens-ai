@@ -128,3 +128,7 @@ Local analysis recognizes a finite technology-focused dictionary and does not re
 Potential improvements: encrypted document storage, managed OCR, configurable skill taxonomies, provider evaluation datasets, email verification/reset, richer tracker notes and reminders, accessibility audits, and explicit data retention policies.
 
 See [portfolio case study](PORTFOLIO_CASE_STUDY.md), [API reference](docs/API.md), and [privacy notes](docs/PRIVACY.md).
+
+## Latest quality audit
+
+See [QA audit — 2 October 2026](docs/QA_AUDIT_2026-10-02.md) for expanded device coverage, reproduced fixes, dependency checks and verification limits.
