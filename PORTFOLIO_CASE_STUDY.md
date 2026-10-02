@@ -24,7 +24,7 @@ The local analyzer is a finite dictionary and text comparison tool, not a genera
 
 ## Technical challenges
 
-Untrusted uploaded documents required more than file-extension checks: signatures, DOCX expansion budgets, bounded text/PDF page counts, worker memory/time controls, and concurrency limits. CV deletion had to remove analyses without deleting unrelated jobs. Version and default selection required concurrent-write protection. Public shared demos needed to prevent personal CV uploads while remaining easy to explore. Analysis snapshots needed to remain intelligible after job edits.
+Untrusted uploaded documents required more than file-extension checks: signatures, DOCX expansion budgets, bounded text/PDF page counts, subprocess memory/time controls, and concurrency limits. CV deletion had to remove analyses without deleting unrelated jobs. Version and default selection required concurrent-write protection. Public shared demos needed to prevent personal CV uploads while remaining easy to explore. Analysis snapshots needed to remain intelligible after job edits.
 
 ## Privacy considerations
 

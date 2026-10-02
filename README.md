@@ -35,7 +35,7 @@ React 19, TypeScript, Vite, React Router, custom CSS, Express 5, PostgreSQL, Pri
 ```text
 src/                  pages, reusable components, hooks, API client
 server/routes/        authentication and private workspace REST routes
-server/services/      provider abstraction and bounded extraction workers
+server/services/      provider abstraction and bounded extraction subprocesses
 shared/               validation schemas, typed analysis contract, demo content
 prisma/               relational schema, committed migration, seed
 scripts/              local database, supervisor, extraction worker, deployment configuration
@@ -115,7 +115,7 @@ Docker support includes a multi-stage non-root image and PostgreSQL Compose serv
 
 - Random session tokens are stored only as SHA-256 digests; browser cookies are HttpOnly, SameSite=Lax, and Secure in production. Passwords use bcrypt with UTF-8 byte validation.
 - Private routes check both ownership and referenced entity ownership. Database cascades remove dependent sensitive records.
-- Uploads stay in memory, then run in bounded workers with file signatures, ZIP expansion checks, page/text limits, a timeout, and limited concurrency. Only reviewed text is persisted.
+- Uploads stay in memory, then run in bounded subprocesses with file signatures, ZIP expansion checks, page/text limits, a timeout, and limited concurrency. Only reviewed text is persisted.
 - An `AnalysisProvider` interface separates deterministic and external providers. Structured output is validated; ungrounded external evidence is removed. Failures are shown instead of silently switching providers.
 - Local comparison is transparent keyword matching, not machine learning. No scoring formula is disguised as hiring probability.
 - A proven authentication/local launcher scaffold was reused from OpsBoard; CareerLens domain models, analysis services, document handling, UI and tests were implemented for this project.

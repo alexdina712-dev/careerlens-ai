@@ -15,7 +15,7 @@ Vercel Hobby and Render/Neon free tiers are intended for this demonstration. Fre
 
 ## Docker
 
-Install a working Docker engine. `docker compose up --build` starts PostgreSQL and the combined app. Read compose.yaml for its documented local-only password and port mapping. Run `docker compose exec -e ALLOW_DEMO_SEED=true app node dist-server/prisma/seed.js` to add demo fixtures. Production passwords must be supplied securely. The runtime user is non-root, and extraction workers are included.
+Install a working Docker engine. `docker compose up --build` starts PostgreSQL and the combined app. Read compose.yaml for its documented local-only password and port mapping. Run `docker compose exec -e ALLOW_DEMO_SEED=true app node dist-server/prisma/seed.js` to add demo fixtures. Production passwords must be supplied securely. The runtime user is non-root, and extraction subprocesses are included.
 
 ## Operational follow-up
 

@@ -14,22 +14,18 @@ let userId: string,
   jobId: string,
   analysisId: string;
 beforeAll(async () => {
-  const a = await owner
-    .post('/api/auth/register')
-    .send({
-      name: 'API Owner',
-      email: `api-${suffix}@example.com`,
-      password: 'SecurePassword!123',
-    });
+  const a = await owner.post('/api/auth/register').send({
+    name: 'API Owner',
+    email: `api-${suffix}@example.com`,
+    password: 'SecurePassword!123',
+  });
   expect(a.status).toBe(201);
   userId = a.body.id;
-  const b = await other
-    .post('/api/auth/register')
-    .send({
-      name: 'Other User',
-      email: `other-${suffix}@example.com`,
-      password: 'SecurePassword!123',
-    });
+  const b = await other.post('/api/auth/register').send({
+    name: 'Other User',
+    email: `other-${suffix}@example.com`,
+    password: 'SecurePassword!123',
+  });
   otherId = b.body.id;
 });
 afterAll(async () => {
@@ -113,6 +109,14 @@ describe('authentication and ownership', () => {
       expect(r.body.sourceName).toBe(name);
     }
   });
+  it('preserves multi-byte UTF-8 across subprocess output chunks', async () => {
+    const text = 'România — și țară. '.repeat(2000);
+    const result = await owner
+      .post('/api/workspace/cvs/extract')
+      .attach('file', Buffer.from(text), 'unicode.txt');
+    expect(result.status).toBe(200);
+    expect(result.body.text).toBe(text.trim());
+  });
   it('rejects binary disguises, unsupported uploads and oversized files', async () => {
     expect(
       (await owner.post('/api/workspace/cvs/extract').attach('file', Buffer.from(cvText), 'cv.exe'))
@@ -134,26 +138,22 @@ describe('authentication and ownership', () => {
     ).toBe(400);
   });
   it('creates and edits a job without fetching its URL', async () => {
-    const r = await owner
-      .post('/api/workspace/jobs')
-      .send({
-        company: 'API Company',
-        position: 'Developer',
-        description: demoJob,
-        url: 'https://example.com/role',
-      });
+    const r = await owner.post('/api/workspace/jobs').send({
+      company: 'API Company',
+      position: 'Developer',
+      description: demoJob,
+      url: 'https://example.com/role',
+    });
     expect(r.status).toBe(201);
     jobId = r.body.id;
     expect(
       (
-        await owner
-          .patch('/api/workspace/jobs/' + jobId)
-          .send({
-            company: 'Updated Company',
-            position: 'Developer',
-            description: demoJob,
-            notes: 'Prepare a project walkthrough',
-          })
+        await owner.patch('/api/workspace/jobs/' + jobId).send({
+          company: 'Updated Company',
+          position: 'Developer',
+          description: demoJob,
+          notes: 'Prepare a project walkthrough',
+        })
       ).status,
     ).toBe(200);
     expect(
