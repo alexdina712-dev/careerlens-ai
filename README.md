@@ -107,7 +107,7 @@ GitHub Actions provisions PostgreSQL and runs migration, seed, build, unit/API t
 
 ## Deployment
 
-See [deployment guide](docs/DEPLOYMENT.md). Supported split hosting: Vercel frontend with same-origin `/api` proxy, Render Node API, and Neon PostgreSQL. `scripts/configure-vercel.mjs` writes routing using your actual API URL. No hosting secrets are tracked. `render.yaml` describes a separate free API service; supply a fresh private database credential.
+See [deployment guide](docs/DEPLOYMENT.md) and [verified public deployment](docs/PUBLIC_DEPLOYMENT.md). Supported split hosting: Vercel frontend with same-origin `/api` proxy, Render Node API, and Neon PostgreSQL. `scripts/configure-vercel.mjs` writes routing using your actual API URL. No hosting secrets are tracked. `render.yaml` describes a separate free API service; supply a fresh private database credential.
 
 Docker support includes a multi-stage non-root image and PostgreSQL Compose service. `docker compose up --build` runs the migrations before startup. Seed deliberately using the documented command. Docker files are prepared; execution requires a working Docker installation and is reported separately from native test evidence.
 
