@@ -60,6 +60,7 @@ function run(args) {
 async function stop() {
   if (stopping) return;
   stopping = true;
+  ready = false;
   console.log('Stopping CareerLens AI.');
   for (const processChild of [...children]) {
     if (process.platform === 'win32' && processChild.pid) {
@@ -115,6 +116,21 @@ for (const signal of ['SIGINT', 'SIGTERM'])
     process.exit(0);
   });
 try {
+  for (const port of [4001, 5174, Number(databaseUrl.port || 54330)]) {
+    await new Promise((accept, reject) => {
+      const probe = createServer();
+      probe.once('error', () =>
+        reject(
+          new Error(
+            'Port ' +
+              port +
+              ' is already in use. Stop the existing local dev server before using this launcher.',
+          ),
+        ),
+      );
+      probe.listen(port, '127.0.0.1', () => probe.close(accept));
+    });
+  }
   console.log('Building CareerLens AI from ' + root);
   await run(['node_modules/typescript/bin/tsc', '--noEmit']);
   await run(['node_modules/vite/bin/vite.js', 'build']);
@@ -151,7 +167,7 @@ try {
         fetch('http://127.0.0.1:4001/api/health'),
         fetch('http://127.0.0.1:5174'),
       ]);
-      if (api.ok && web.ok) {
+      if (!stopping && api.ok && web.ok) {
         ready = true;
         break;
       }
