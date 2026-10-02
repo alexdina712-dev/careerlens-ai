@@ -6,6 +6,7 @@ const description =
   'We seek a software developer with React, TypeScript, Node.js and PostgreSQL experience. Use Git, build REST APIs, write automated tests and work with Docker and AWS. At least 2 years of experience.';
 async function nav(page: Page, label: string) {
   await expect(page.locator('.topbar')).toBeVisible();
+  await expect(page.getByRole('status')).not.toBeVisible();
   if (await page.getByRole('button', { name: 'Open navigation', exact: true }).isVisible())
     await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   await page

@@ -246,6 +246,7 @@ button {
   display: flex;
   flex-direction: column;
   z-index: 30;
+  overflow-y: auto;
 }
 .brand {
   display: flex;
@@ -781,6 +782,7 @@ main {
   box-shadow: 0 18px 90px #0c243631;
   color: #26374b;
   max-height: 90vh;
+  overflow: auto;
 }
 .modal::backdrop {
   background: #1e314e55;
@@ -1931,5 +1933,27 @@ tbody tr:hover {
   * {
     scroll-behavior: auto !important;
     transition: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .job-detail .form-actions {
+    flex-direction: column;
+  }
+  .form-actions .button {
+    min-width: 0;
+    white-space: normal;
+  }
+  .sidebar-note,
+  .sidebar-footer {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 800px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 }

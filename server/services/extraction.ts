@@ -12,6 +12,7 @@ export async function extract(file: Express.Multer.File) {
     return await new Promise<{ text: string; sourceName: string }>((resolveResult, reject) => {
       const worker = new Worker(resolve('scripts/extract-document.mjs'), {
         workerData: { buffer: file.buffer, kind },
+        execArgv: [], // Keep dev loaders out of the isolated document worker.
         resourceLimits: { maxOldGenerationSizeMb: 128 },
       });
       let settled = false;
