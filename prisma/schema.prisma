@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+enum ApplicationStatus {
+  INTERESTED
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  ARCHIVED
+}
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  passwordHash String
+  createdAt DateTime @default(now())
+  sessions Session[]
+  cvs Cv[]
+  jobs Job[]
+  analyses Analysis[]
+}
+model Session {
+  id String @id
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  expiresAt DateTime
+  @@index([userId])
+}
+model Cv {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  title String
+  isDefault Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  versions CvVersion[]
+  @@index([userId,createdAt])
+}
+model CvVersion {
+  id String @id @default(cuid())
+  cvId String
+  cv Cv @relation(fields:[cvId], references:[id], onDelete:Cascade)
+  number Int
+  text String
+  sourceName String?
+  createdAt DateTime @default(now())
+  analyses Analysis[]
+  @@unique([cvId,number])
+}
+model Job {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  company String
+  position String
+  location String @default("")
+  url String?
+  description String
+  notes String @default("")
+  status ApplicationStatus @default(INTERESTED)
+  appliedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  analyses Analysis[]
+  events ApplicationEvent[]
+  @@index([userId,status,updatedAt])
+}
+model ApplicationEvent {
+  id String @id @default(cuid())
+  jobId String
+  job Job @relation(fields:[jobId], references:[id], onDelete:Cascade)
+  status ApplicationStatus
+  createdAt DateTime @default(now())
+  @@index([jobId,createdAt])
+}
+model Analysis {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  cvVersionId String
+  cvVersion CvVersion @relation(fields:[cvVersionId], references:[id], onDelete:Cascade)
+  jobId String
+  job Job @relation(fields:[jobId], references:[id], onDelete:Cascade)
+  jobSnapshot Json
+  result Json
+  provider String
+  model String?
+  createdAt DateTime @default(now())
+  @@index([userId,createdAt])
+}
