@@ -1,12 +1,13 @@
 import { z } from 'zod';
-const password = z
-  .string()
-  .min(10)
-  .max(72)
-  .refine(
-    (s) => new TextEncoder().encode(s).length <= 72,
-    'Password must be at most 72 UTF-8 bytes.',
-  );
+const password = (minimum: number) =>
+  z
+    .string()
+    .min(minimum)
+    .max(72)
+    .refine(
+      (s) => new TextEncoder().encode(s).length <= 72,
+      'Password must be at most 72 UTF-8 bytes.',
+    );
 export const loginSchema = z.object({
   email: z
     .string()
@@ -14,11 +15,11 @@ export const loginSchema = z.object({
     .email()
     .max(254)
     .transform((v) => v.toLowerCase()),
-  password: z.string().min(1).max(72),
+  password: password(1),
 });
 export const registerSchema = loginSchema.extend({
   name: z.string().trim().min(2).max(80),
-  password,
+  password: password(10),
 });
 export const cvSchema = z.object({
   title: z.string().trim().min(2).max(100),

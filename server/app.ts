@@ -16,12 +16,12 @@ app.set('trust proxy', 1);
 app.use(helmet());
 const origin = process.env.APP_ORIGIN || 'http://127.0.0.1:5174';
 app.use(cors({ origin, credentials: true }));
-app.use(express.json({ limit: '128kb' }));
-app.use(cookieParser());
 app.use('/api', (_req, res, next) => {
   res.set('Cache-Control', 'no-store');
   next();
 });
+app.use(express.json({ limit: '128kb' }));
+app.use(cookieParser());
 // Origin verification protects cookie-authenticated mutations, including login CSRF.
 app.use('/api', (req, _res, next) => {
   if (
@@ -52,14 +52,12 @@ app.use((_req, _res, next) => next(new ApiError(404, 'Endpoint not found.')));
 app.use(
   (error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     if (error instanceof multer.MulterError)
-      return res
-        .status(400)
-        .json({
-          error:
-            error.code === 'LIMIT_FILE_SIZE'
-              ? 'File exceeds the 2 MB upload limit.'
-              : 'Invalid upload. Choose one file.',
-        });
+      return res.status(400).json({
+        error:
+          error.code === 'LIMIT_FILE_SIZE'
+            ? 'File exceeds the 2 MB upload limit.'
+            : 'Invalid upload. Choose one file.',
+      });
     if (error instanceof ZodError)
       return res
         .status(400)
@@ -74,6 +72,8 @@ app.use(
       return res
         .status(409)
         .json({ error: 'A related record changed or was deleted. Refresh and try again.' });
+    if (error instanceof Error && 'type' in error && error.type === 'entity.too.large')
+      return res.status(413).json({ error: 'JSON request exceeds the 128 KB limit.' });
     if (error instanceof SyntaxError && 'body' in error)
       return res.status(400).json({ error: 'Invalid JSON request.' });
     console.error(error instanceof Error ? error.name : 'UnknownError');

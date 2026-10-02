@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import { db } from '../db.js';
 import { ApiError } from '../errors.js';
 import {
+  loginSchema,
   cvSchema,
   versionSchema,
   jobSchema,
@@ -236,27 +237,25 @@ workspaceRoutes.post('/analyses', limit, async (req, res) => {
     );
   const provider = input.useExternal ? new CompatibleProvider() : new LocalProvider();
   const result = await provider.analyze(version.text, j.description);
-  res
-    .status(201)
-    .json(
-      await db.analysis.create({
-        data: {
-          userId: req.userId!,
-          cvVersionId: version.id,
-          jobId: j.id,
-          jobSnapshot: {
-            company: j.company,
-            position: j.position,
-            description: j.description,
-            location: j.location,
-          },
-          provider: provider.name,
-          model: input.useExternal ? process.env.AI_MODEL || 'gpt-4o-mini' : null,
-          result,
+  res.status(201).json(
+    await db.analysis.create({
+      data: {
+        userId: req.userId!,
+        cvVersionId: version.id,
+        jobId: j.id,
+        jobSnapshot: {
+          company: j.company,
+          position: j.position,
+          description: j.description,
+          location: j.location,
         },
-        include: { cvVersion: { include: { cv: { select: { title: true } } } }, job: true },
-      }),
-    );
+        provider: provider.name,
+        model: input.useExternal ? process.env.AI_MODEL || 'gpt-4o-mini' : null,
+        result,
+      },
+      include: { cvVersion: { include: { cv: { select: { title: true } } } }, job: true },
+    }),
+  );
 });
 workspaceRoutes.delete('/analyses/:id', async (req, res) => {
   const a = await db.analysis.findFirst({ where: { id: req.params.id, userId: req.userId } });
@@ -266,7 +265,7 @@ workspaceRoutes.delete('/analyses/:id', async (req, res) => {
 });
 workspaceRoutes.delete('/account', async (req, res) => {
   await privateCv(req.userId!);
-  const { password } = z.object({ password: z.string().min(1).max(72) }).parse(req.body);
+  const { password } = z.object({ password: loginSchema.shape.password }).parse(req.body);
   const u = await db.user.findUniqueOrThrow({ where: { id: req.userId } });
   if (!(await bcrypt.compare(password, u.passwordHash)))
     throw new ApiError(400, 'Password is incorrect.');

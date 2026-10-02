@@ -1,4 +1,13 @@
 import { test, expect, type Page } from '@playwright/test';
+const browserErrors = new WeakMap<Page, string[]>();
+test.beforeEach(async ({ page }) => {
+  const errors: string[] = [];
+  browserErrors.set(page, errors);
+  page.on('pageerror', (error) => errors.push(error.message));
+});
+test.afterEach(async ({ page }) => {
+  expect(browserErrors.get(page), 'Uncaught browser exceptions').toEqual([]);
+});
 const password = 'TestPrivate!2026';
 const cvText =
   'Fictional Taylor Example. Software developer with 3 years of experience. Skills include React, TypeScript, Node.js, PostgreSQL, REST APIs and Git. Built internal dashboards and wrote automated tests with Vitest and Playwright.';
